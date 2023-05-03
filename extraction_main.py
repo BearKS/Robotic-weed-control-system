@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 def denoise_image(image_path):
     # Load image in grayscale
@@ -28,6 +28,11 @@ def denoise_image(image_path):
         # Combine the denoised images
         denoised = cv2.bitwise_or(dilated_rect, dilated_circ)
         denoised = cv2.bitwise_or(denoised, dilated_cross)
+
+        # Apply closing operation
+        closing_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10))
+        denoised = cv2.morphologyEx(denoised, cv2.MORPH_OPEN, closing_kernel)
+
         return denoised
 def bounding(img, input):
     denoised_img = denoise_image(img)
@@ -49,6 +54,7 @@ def bounding(img, input):
         max_area = 0
 
         # Define list for store position
+        crop_plant = []
         all_box_position = []
         center_box_position=[]
         for contour in contours:
@@ -88,9 +94,15 @@ def bounding(img, input):
                 # Crop the image using the bounding box coordinates and save it as an RGB image
                 cropped_image = result[y:y+h, x:x+w]
                 output_path = os.path.join(output_dir, f'cropped_{x}_{y}.png')
+                crop_plant.append(cropped_image)
+
                 cv2.imwrite(output_path, cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
         cv2.imwrite('output.png' , cv2.cvtColor( result, cv2.COLOR_BGR2RGB))
-        return center_box_position
+        return center_box_position,crop_plant
     
 if __name__ == "__main__":
-    pos = bounding('demo4_1.png','demo4.png') # Binary Mask, Original image
+    pos,crop_plant = bounding('demo4_1.png','demo4.png') # Binary Mask, Original image
+    print(type(crop_plant))
+    print(pos)
+    # print(crop_plant[0].shape)
+    # cv2.imwrite('outputtest.png' ,  crop_plant[0])

@@ -1,0 +1,10 @@
+albumentations>=0.3.0
+tensorflow==2.9.0
+opencv-python
+segmentation-models
+numpy
+fastapi
+uvicorn[standard]
+Scikit-Image
+NumPy
+Matplotlib

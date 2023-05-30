@@ -22,7 +22,7 @@ def load_model():
         return sm.metrics.IOUScore(threshold=0.5)
     def f1_fn():
         return sm.metrics.FScore(threshold=0.5)
-    model = keras.models.load_model('../model_v10_128.h5',custom_objects={'dice_loss_plus_1binary_focal_loss':loss_fn,'iou_score':IOUScore,'f1-score':f1_fn})
+    model = keras.models.load_model('../model/model_v10_128.h5',custom_objects={'dice_loss_plus_1binary_focal_loss':loss_fn,'iou_score':IOUScore,'f1-score':f1_fn})
     # return model
 
 def inference(image):
